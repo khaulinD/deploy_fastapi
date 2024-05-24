@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Mapped, mapped_column, relationship, selectinload
 from starlette import status
 from auth import utils as auth_utils
-from company.schemas import CompanyUpdatePartial
+from company.schemas import CompanyUpdatePartial, CompanyUpdateSetting
 from core.mailer import send_verification_email
 from db.postgres import Base
 from decorators.as_dict import AsDictMixin
@@ -144,15 +144,18 @@ class CompanyStore:
     @db_session
     async def update_company(session,
                              company_id: int,
-                             data: CompanyUpdatePartial):
+                             data: CompanyUpdatePartial | CompanyUpdateSetting):
         try:
             company = await session.get(Company, company_id)
             if company is None:
                 raise HTTPException(status_code=404, detail="Company not found")
 
             for name, value in data.model_dump(exclude_unset=True).items():
-                if name == "password":
+                if name == "password" or name == "newPassword":
                     value = auth_utils.hash_password(value)
+                elif name == "oldPassword":
+                    continue
+
                 setattr(company, name, value)
 
             await session.commit()

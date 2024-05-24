@@ -87,6 +87,7 @@ class Settings(BaseSettings):
         ("/verification_email", "POST"),
         ("/forgot_password", "POST"),
         ("/reset_password", "POST"),
+        ("/resend_verification", "POST"),
 
         ("/jwt/login/user", "POST"),
         ("/jwt/login/company", "POST"),

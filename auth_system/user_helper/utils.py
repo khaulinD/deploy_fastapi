@@ -26,3 +26,7 @@ async def get_user_by_email(email: str):
         from db.models.doctors.company_doctor import CompanyDoctorStore
         company_doctor = await CompanyDoctorStore.get_doctor_by_email(email=email)
     return company, company_doctor
+
+
+async def send_data_old_email(email: str, user_type: str):
+    pass

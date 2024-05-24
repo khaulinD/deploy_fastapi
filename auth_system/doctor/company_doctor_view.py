@@ -66,15 +66,31 @@ async def create_doctor(
 async def update_product_partial(
         user_id: int,
         doctor_update: CompanyDoctorUpdatePartial,
+        background_tasks: BackgroundTasks,
 ):
+    if doctor_update.email or doctor_update.oldPassword:
+        user = await CompanyDoctorStore.get_doctor_by_id(doctor_id=user_id)
+
+        if doctor_update.oldPassword and doctor_update.newPassword:
+            if not auth_utils.validate_password(
+                    password=doctor_update.oldPassword,
+                    hashed_password=user.password,
+            ):
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect password")
+        new_user = await CompanyDoctorStore.update_doctor(
+            doctor_id=user_id,
+            data=doctor_update)
+        if new_user:
+            background_tasks.add_task(send_email_with_credentials,
+                                      email_to=user.email,
+                                      username=user.name,
+                                      login=doctor_update.email if doctor_update.email else user.email,
+                                      password=doctor_update.newPassword if doctor_update.newPassword else "********")
+        return new_user
     return await CompanyDoctorStore.update_doctor(
         doctor_id=user_id,
         data=doctor_update)
 
-
-# @router.get("/{company_id}/{page}/", response_model=CompanyDoctorsSchemaWithAmount)
-# async def get_company_with_doctors(page: int, company_id: int):
-#     return await CompanyDoctorStore.get_company_with_doctors(page=page, company_id=company_id)
 
 @router.delete("/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_doctor(

@@ -21,6 +21,7 @@ async def create_note(data: dict, request: Request):
         prompt = await handle_note_data(data=data)
         res = await generate_note(messages=prompt)
         await NoteHistoryStore.create_note(data=CreateNoteSchema(note_type=data["selectedNoteType"],
+                                                                 description=res,
                                                                  note_format=data["selectedNoteFormat"],
                                                                  user_id=payload["sub"]).model_dump())
         return res

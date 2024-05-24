@@ -1,10 +1,12 @@
-from fastapi import APIRouter, Depends, BackgroundTasks, Response
+from fastapi import APIRouter, Depends, BackgroundTasks, Response, HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
 import random
 from auth import utils as auth_utils
-from company.schemas import CreateCompany, CompanySchema, CompanyDoctorsSchema, CompanyUpdatePartial
+from company.schemas import CreateCompany, CompanySchema, CompanyDoctorsSchema, CompanyUpdatePartial, \
+    CompanyUpdateSetting
+from core.mailer import send_email_with_credentials
 from db.models.company import CompanyStore
 
 router = APIRouter(
@@ -52,12 +54,32 @@ async def get_all_company():
 
 
 @router.patch("/{company_id}")
-async def update_product_partial(
+async def update_company_partial(
     company_id: int,
-    company_update: CompanyUpdatePartial,
+    company_update: CompanyUpdateSetting,
+    background_tasks: BackgroundTasks,
 ):
-    return await CompanyStore.update_company(
+    if company_update.email or company_update.oldPassword:
+        user = await CompanyStore.get_company_clean_by_id(company_id=company_id)
+        if company_update.oldPassword and company_update.newPassword:
+            if not auth_utils.validate_password(
+                    password=company_update.oldPassword,
+                    hashed_password=user.password,
+            ):
+                raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Incorrect password")
+        new_user = await CompanyStore.update_company(
+            company_id=company_id,
+            data=company_update)
+        if new_user:
+            background_tasks.add_task(send_email_with_credentials,
+                                      email_to=user.email,
+                                      username=user.name,
+                                      login=company_update.email if company_update.email else user.email,
+                                      password=company_update.newPassword if company_update.newPassword else "********")
+        return new_user
+    new_user = await CompanyStore.update_company(
         company_id=company_id,
         data=company_update)
+    return new_user
 
 

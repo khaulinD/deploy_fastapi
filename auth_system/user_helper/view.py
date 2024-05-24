@@ -11,9 +11,8 @@ from db.models.doctors.company_doctor import CompanyDoctorStore
 from db.models.doctors.doctor import DoctorStore
 from doctor.schemas import DoctorSchema, CompanyDoctorSchema, DoctorUpdatePartial
 from user_helper.utils import generate_token, get_user_by_email
-from core.mailer import forgot_password as send_forgot_password
+from core.mailer import forgot_password as send_forgot_password, send_email_with_credentials
 import aioredis
-
 
 rb = aioredis.Redis(host=settings.redis.host, port=settings.redis.port, db=1)
 
@@ -34,8 +33,6 @@ async def verify_email(token: int, response: Response):
     return res
 
 
-
-
 @router.post("/forgot_password")
 async def forgot_password(email: str, background_task: BackgroundTasks):
     # Check if the email exists in any of the tables
@@ -46,7 +43,7 @@ async def forgot_password(email: str, background_task: BackgroundTasks):
         # Change password for company user
         await CompanyStore.update_company(company.id, CompanyUpdatePartial(password=password))
         username = company.name
-        background_task.add_task(send_forgot_password, username=username,  password=password, email=company.email)
+        background_task.add_task(send_forgot_password, username=username, password=password, email=company.email)
         # await send_forgot_password(email_to=company.email, password=password)
         return {"message": "Password updated for company."}
     elif company_doctor:
@@ -63,21 +60,35 @@ async def forgot_password(email: str, background_task: BackgroundTasks):
 
 @router.post("/reset_password")
 async def reset_password(email, password: str, new_password: str, background_task: BackgroundTasks):
-
     company, company_doctor = await get_user_by_email(email)
 
     if company:
-        user, user_type = await validate_auth_user(email, password, "company")
+        user, _ = await validate_auth_user(email, password, "company", background_task)
         # Change password for company user
-        await CompanyStore.update_company(user.id, CompanyUpdatePartial(password=new_password))
-        return {"message": "Password updated for doctor user."}
+        user = await CompanyStore.update_company(user.id, CompanyUpdatePartial(password=new_password))
+        if user:
+            background_task.add_task(send_email_with_credentials,
+                                     email_to=user.email,
+                                     username=user.name,
+                                     login=user.email,
+                                     password=password)
+            return {"message": "Password updated for company user."}
     elif company_doctor:
-        user, user_type = await validate_auth_user(email, password, "companydoctor")
+        user, _ = await validate_auth_user(email, password, "companydoctor", background_task)
         # Change password for company doctor user
         await CompanyDoctorStore.update_doctor(user.id, DoctorUpdatePartial(password=new_password))
-        return {"message": "Password updated for doctor user."}
+        if user:
+            username = f'{user.firstName} {user.lastName}'
+            background_task.add_task(send_email_with_credentials,
+                                     email_to=user.email,
+                                     username=username,
+                                     login=user.email,
+                                     password=password)
+            return {"message": "Password updated for doctor user."}
     else:
         raise HTTPException(status_code=404, detail="Email not found.")
+
+    raise HTTPException(status_code=400, detail="Error while reseting password.")
 
 
 @router.get("/checkout_auth")
@@ -94,7 +105,7 @@ async def validate_user(response: Response, request: Request):
 
 @router.post("/resend_verification")
 async def resend_verification(company_id: int, background_task: BackgroundTasks):
-    company = CompanyStore.get_company_clean_by_id(company_id=company_id)
+    company = await CompanyStore.get_company_clean_by_id(company_id=company_id)
     if company:
         await auth_utils.send_verification_code(user=company, background_tasks=background_task)
         return company

@@ -71,6 +71,16 @@ class CompanyDoctorUpdatePartial(BaseModel):
     # company_id: int | None = None
 
 
+class CompanyDoctorUpdateSetting(BaseModel):
+    active: bool | None = None
+    oldPassword: str | None = None
+    newPassword: str | None = None
+    email: EmailStr | None = None
+    firstName: str = Field(min_length=3)
+    lastName: str = Field(min_length=3)
+    position: str | None = None
+
+
 class DoctorUpdatePartial(BaseModel):
 
     active: bool | None = None

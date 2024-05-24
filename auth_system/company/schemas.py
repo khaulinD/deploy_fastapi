@@ -48,8 +48,9 @@ class CompanyDoctorsSchemaWithAmount(CompanySchema):
 
 
 class CompanyUpdatePartial(BaseModel):
-    name: str | None = Field(..., min_length=3, max_length=100)
+    name: str | None = None
     active: bool | None = None
+
     password: str | None = None
     email: EmailStr | None = None
     user_tariff_id: int | None = None
@@ -62,6 +63,13 @@ class CompanyUpdatePartial(BaseModel):
     created_at: datetime | None = None
     updated_at: datetime | None = None
 
+
+class CompanyUpdateSetting(BaseModel):
+    name: str | None = None
+    active: bool | None = None
+    oldPassword: str | None = None
+    newPassword: str | None = None
+    email: EmailStr | None = None
 
 
 class TokenSchema(BaseModel):
