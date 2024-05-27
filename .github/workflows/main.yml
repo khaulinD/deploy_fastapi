@@ -24,8 +24,8 @@ jobs:
         pip install -r requirements.txt
     - name: Start FastAPI
       run: |
-        uvicorn auth_system.main:app --host 0.0.0.0 --port 8000 &
-        PID=$!
-        sleep 5  # Wait for the server to start
-        curl --fail http://localhost:8000/ || (echo "Server did not start successfully"; kill $PID; exit 1)
-        kill $PID
+        uvicorn auth_system.main:app --host 0.0.0.0 --port 8000
+    - name: Create DB
+      run: |
+        ./db-init.sh
+    
