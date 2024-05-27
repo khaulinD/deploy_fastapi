@@ -28,4 +28,4 @@ jobs:
         PORT: 8000
     - name: Create DataBase
       run: |
-	 ./db-init.sh
+        ./db-init.sh
