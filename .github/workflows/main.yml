@@ -23,6 +23,4 @@ jobs:
         pip install -r requirements.txt
     - name: Start FastAPI
       run: |
-        gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:${{ env.PORT }}
-      env:
-       PORT: 8000
+        gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:8000
