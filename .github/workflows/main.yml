@@ -23,7 +23,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
     - name: Start FastAPI
-      run: uvicorn main:app --port 8000 --reload
+      run: uvicorn main:app
     - name: Create DB
       run: |
         ./db-init.sh
