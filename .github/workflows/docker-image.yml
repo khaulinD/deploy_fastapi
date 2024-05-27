@@ -1,18 +1,16 @@
-name: Docker Image CI
-
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+name: Docker Workflow
+on: [push]
 
 jobs:
-
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker://docker.pkg.github.com/${{ github.repository }}/rydik/docker-fastapi-doctor:2.0
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Build Docker image
+      run: docker build . --file Dockerfile --tag my-application:latest
+
+    - name: Run Docker container
+      run: docker run my-application:latest
