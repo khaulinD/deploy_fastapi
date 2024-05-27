@@ -20,8 +20,6 @@ from core.config import settings
 
 router = APIRouter(tags=["Payment"], prefix="/payment")
 rb = aioredis.Redis(host=settings.redis.host, port=settings.redis.port, db=0)
-
-
 @router.get("/checkout")
 async def create_checkout_session(tariff_id: int, request: Request):
     try:

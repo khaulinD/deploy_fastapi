@@ -15,9 +15,7 @@ from core.mailer import send_verification_email
 from db.models.doctors.company_doctor import CompanyDoctorStore
 from doctor.schemas import DoctorUpdatePartial
 
-
-rb = aioredis.Redis(host=settings.redis.host, port=settings.redis.port, db=1)
-
+rb = aioredis.Redis(host="redistest1fastapidoctor.redis.cache.windows.net", port=6379, password="vH7yX3RWEPMUiOaxsAmZLyvFinNjCp5hwAzCaDxe9kE=", db=1)
 
 def encode_jwt(
     payload: dict,
@@ -129,6 +127,12 @@ async def deactivate_company_doctor(list_of_doctors: list, status: bool):
 
 
 async def send_verification_code(user, background_tasks):
+    print(rb)
+    pong = await rb.ping()
+    print(pong)
+    # pong = await rb.ping()
+    #
+    # print(f"Redis PING response: {pong}")
     token = random.randint(100000000, 999999999)
     set_success = await rb.set(f"customer_verify_token_{token}", user.id, nx=True, ex=30 * 60)
     while not set_success:

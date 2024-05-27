@@ -2,6 +2,7 @@ import asyncio
 import time
 
 import stripe
+import uvicorn
 from fastapi import FastAPI, HTTPException, status, Request, Response
 from fastapi.responses import JSONResponse
 from auth.middleware import token_middleware
@@ -71,12 +72,14 @@ app.include_router(notes_generate_view)
 
 
 
-@app.on_event("startup")
-async def startup():
-    # asyncio.run(recreate_tables())
-    pass
-
-@app.on_event("shutdown")
-async def shutdown():
-    pass
-
+# @app.on_event("startup")
+# async def startup():
+#     # asyncio.run(recreate_tables())
+#     pass
+#
+# @app.on_event("shutdown")
+# async def shutdown():
+#     pass
+#
+# if __name__ == "__main__":
+#     uvicorn.run(app, host="0.0.0.0", port=8000)
