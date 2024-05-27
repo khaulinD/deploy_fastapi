@@ -1,4 +1,3 @@
-
 name: Build and deploy Python app to Azure Web App
 
 env:
@@ -46,21 +45,18 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      # Optionally add a testing step here
-
       - name: Upload artifact for deployment jobs
         uses: actions/upload-artifact@v4
         with:
           name: python-app
           path: .
-          exclude: venv
+          if-no-files-found: error # Ensures the step fails if no files are found to upload
 
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment:
       name: production
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
       - name: Download artifact from build job
@@ -72,12 +68,12 @@ jobs:
         uses: azure/login@v1
         with:
           client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_321661FA910846BEBD8D84F42B94560D }}
-          tenant-id: ${{ secrets.AUREAPPSERVICE_TENANTID_6EAC3F138F024CF4AD715119AC04371B }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_6EAC3F138F024CF4AD715119AC04371B }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_56DB1CD3BBFA49799015E70F0EEDB52A }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
-        uses: azure/webapps-deploy@85270a1854658d167ab239bce43949edb336fa7c
+        uses: azure/webapps-deploy@v1
         with:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           publish-profile: ${{ secrets.AZURE_PUBLISH_SECRET }}
