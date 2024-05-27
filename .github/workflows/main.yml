@@ -4,7 +4,11 @@ on:
   workflow_dispatch:
   push:
     branches:
-    - main
+      - main
+
+env:
+  AZURE_WEBAPP_NAME: azure-test-fastapi
+  AZURE_WEBAPP_PACKAGE_PATH: "./publish"
 
 jobs:
   deploy:
@@ -13,22 +17,28 @@ jobs:
       run:
         working-directory: ./auth_system  # Update this if your FastAPI app isn't in the repository root
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python
-      uses: actions/setup-python@v3
-      with:
-        python-version: '3.10'
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-    - name: Start FastAPI
-      run: |
-        uvicorn main:app --host 0.0.0.0 --port 8000 &
-        echo "Uvicorn started"
-        sleep 5  # Wait for the server to become responsive
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.10'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Start FastAPI
+        run: |
+          uvicorn main:app --host 0.0.0.0 --port 8000 &
+          echo "Uvicorn started"
+          sleep 5  # Wait for the server to become responsive
 
-    - name: Create DB
-      run: |
-        ./db-init.sh
-    
+      - name: Create DB
+        run: |
+          ./db-init.sh
+
+      - name: Deployment  # Corrected indentation here
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_PS_NAME }}
+          publish-profile: ${{ secrets.AZURE_PUBLISH_SECRET }}  # Corrected typo 'sercrets' to 'secrets'
+          package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
