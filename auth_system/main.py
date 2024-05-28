@@ -38,7 +38,7 @@ async def tariff_middleware(request: Request, call_next):
     response = await check_tariff_middleware(request, response, call_next)
     return response
 
-
+#info
 @app.middleware("http")
 async def jwt_middleware(request: Request, call_next):
     print("111111111111")
@@ -54,6 +54,7 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+
 )
 
 
