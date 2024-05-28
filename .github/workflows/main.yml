@@ -13,14 +13,8 @@ on:
 permissions:
   actions: write
   checks: write
-  contents: write
+  contents: read
   deployments: write
-  issues: write
-  packages: write
-  pull-requests: write
-  repository-projects: write
-  security-events: write
-  statuses: write
 
 jobs:
   build:
