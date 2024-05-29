@@ -31,4 +31,4 @@ jobs:
       - name: Delete old container
         run: docker rm -f fastapi-doctor-container
       - name: Run docker container
-        run: docker run -d -p 5000:5000 --name fastapi-doctor-container khaulin/fastapi-doctor
+        run: docker run -d -p 8000:8000 --name fastapi-doctor-container khaulin/fastapi-doctor
