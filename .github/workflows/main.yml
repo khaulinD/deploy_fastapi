@@ -24,7 +24,7 @@ jobs:
         
   deploy:
     needs: build
-    runs-on: [fastapi-doctor]
+    runs-on: [self-hosted]
     steps:
       - name: Pull image from docker hub
         run: docker pull khaulin/fastapi-doctor:latest
