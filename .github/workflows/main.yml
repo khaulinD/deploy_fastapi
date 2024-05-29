@@ -15,7 +15,7 @@ jobs:
       - name: Login to docker hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} 
       - name: Build docker image
-        run: docker build -t /auth_system .
+        run: docker build -t khaulin/fastapi-doctor:latest .
       - name: Publish image to docker hub
         run: docker push khaulin/fastapi-doctor:latest
         
