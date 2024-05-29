@@ -2,7 +2,7 @@ FROM python:3.10-slim
 
 WORKDIR .
 
-COPY requirements.txt .
+COPY auth_system/requirements.txt .
 
 # Install dependencies
 RUN pip install --upgrade pip && \
@@ -18,6 +18,6 @@ EXPOSE 8000
 #RUN /usr/src/app/db-init.sh
 
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "auth_system.main:app", "--host", "0.0.0.0", "--port", "8000"]
 #CMD gunicorn -w 4 -k uvicorn.workers.UvicornWorker main:app --bind 0.0.0.0:8000
 
