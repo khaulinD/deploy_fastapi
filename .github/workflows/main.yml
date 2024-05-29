@@ -15,17 +15,17 @@ jobs:
       - name: Login to docker hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }} 
       - name: Build docker image
-        run: docker build -t integrationninjas/fastapi-doctor .
+        run: docker build -t /auth_system .
       - name: Publish image to docker hub
-        run: docker push integrationninjas/fastapi-doctor:latest
+        run: docker push khaulin/fastapi-doctor:latest
         
   deploy:
     needs: build
     runs-on: [fastapi-doctor]
     steps:
       - name: Pull image from docker hub
-        run: docker pull integrationninjas/fastapi-doctor:latest
+        run: docker pull khaulin/fastapi-doctor:latest
       - name: Delete old container
         run: docker rm -f fastapi-doctor-container
       - name: Run docker container
-        run: docker run -d -p 5000:5000 --name fastapi-doctor-container integrationninjas/fastapi-doctor
+        run: docker run -d -p 5000:5000 --name fastapi-doctor-container khaulin/fastapi-doctor
