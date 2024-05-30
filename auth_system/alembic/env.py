@@ -8,8 +8,19 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
 from core.config import settings
-from core.models.base import Base
-from core.models.models import User, Token
+from db.postgres import Base
+from db.models.tariff_plan_info import TariffPlanStore, TariffPlan
+from db.models.user_tariff import UserTariffPlan
+from db.models.token import Token, TokenStore
+from db.models.company import Company, CompanyStore
+# from db.models.doctors.doctor import DoctorStore, Doctor
+from db.models.doctors.company_doctor import CompanyDoctorStore, CompanyDoctor
+from db.models.notes.note_history import NoteHistory, NoteHistoryStore
+from db.models.role import RoleStore, Role
+from db.models.permission import PermissionStore, Permission
+from db.models.notes.note_options import NoteOptionStore, NoteOption, data
+
+
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
