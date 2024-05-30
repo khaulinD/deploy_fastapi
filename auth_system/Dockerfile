@@ -12,15 +12,22 @@ COPY . .
 # Expose the port
 EXPOSE 8000
 
+# Copy the entrypoint script and make it executable
+COPY db-init.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+CMD ["/usr/local/bin/entrypoint.sh"]
+
+
 # Copy and execute the initialization script
 #COPY db-init.sh /usr/src/app/
 #RUN chmod +x /usr/src/app/db-init.sh
 #RUN /usr/src/app/db-init.sh
-RUN alembic upgrade head
-
-# Command to start the application
-CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "main:app", "--bind", "0.0.0.0:8000"]
-#CMD ["guvicorn", "appli:app", "--host", "0.0.0.0", "--port", "8000"]
-
+#RUN alembic upgrade head
+#
+## Command to start the application
+#CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "main:app", "--bind", "0.0.0.0:8000"]
+##CMD ["guvicorn", "appli:app", "--host", "0.0.0.0", "--port", "8000"]
+#
 
 
