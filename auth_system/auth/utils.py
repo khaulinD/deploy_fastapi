@@ -15,7 +15,7 @@ from core.mailer import send_verification_email
 from db.models.doctors.company_doctor import CompanyDoctorStore
 from doctor.schemas import DoctorUpdatePartial
 
-rb = aioredis.Redis(host="rdoctor-redis-ro.qoblcj.ng.0001.euw3.cache.amazonaws.com", port=6379, db=1)
+rb = aioredis.Redis(host="doctor-redis-ro.qoblcj.ng.0001.euw3.cache.amazonaws.com", port=6379, db=1)
 # rb = aioredis.Redis(host=f"{settings.redis.host}", port=settings.redis.port, db=0)
 def encode_jwt(
     payload: dict,
