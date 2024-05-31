@@ -16,8 +16,8 @@ DB_NAME = os.environ.get("POSTGRES_DB")
 
 
 class DbSettings(BaseModel):
-    url: str = f'postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
-    # url: str = f'postgresql+asyncpg://postgres:12345678@my-db-1.cb6wec068qfc.eu-west-3.rds.amazonaws.com:5432/postgres'
+    # url: str = f'postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+    url: str = f'postgresql+asyncpg://postgres:12345678@my-db-1.cb6wec068qfc.eu-west-3.rds.amazonaws.com:5432/postgres'
     # url: str = "cnx = psycopg2.connect(user='test', password='password123!', host='test-datbase.postgres.database.azure.com', port=5432, database='test_db')"
     # url: str = f'postgresql+asyncpg://test:password123!@test-datbase.postgres.database.azure.com:{DB_PORT}/test_db'
 
