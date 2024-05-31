@@ -19,7 +19,7 @@ EXPOSE 8000
 #RUN alembic upgrade head
 
 # Command to start the application
-CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "main:app", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn","--log-level", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "main:app", "--bind", "0.0.0.0:8000"]
 #CMD ["guvicorn", "appli:app", "--host", "0.0.0.0", "--port", "8000"]
 
 
