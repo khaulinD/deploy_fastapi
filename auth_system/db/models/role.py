@@ -33,6 +33,14 @@ class Role(Base, AsDictMixin):
 
 
 class RoleStore:
+
+    @staticmethod
+    @db_session
+    async def get_count(session) -> int:
+        count_query = select(func.count()).select_from(Role)
+        result = await session.execute(count_query)
+        return result.scalar_one()
+
     @staticmethod
     @db_session
     async def create_role(session, name: str):

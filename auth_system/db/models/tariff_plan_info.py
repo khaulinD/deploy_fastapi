@@ -39,6 +39,14 @@ class TariffPlan(Base, AsDictMixin):
 
 
 class TariffPlanStore:
+
+    @staticmethod
+    @db_session
+    async def get_count(session) -> int:
+        count_query = select(func.count()).select_from(TariffPlan)
+        result = await session.execute(count_query)
+        return result.scalar_one()
+
     @staticmethod
     @db_session
     async def create(session, data: dict):

@@ -66,42 +66,48 @@ async def create_db_if_not_exists():
 
 
 async def create_defaults():
-    default_roles = {}
-    for role in PERMISSION.keys():
-        default_roles[role] = await RoleStore.create_role(name=role)
+    # Check if any roles exist
+    if not await RoleStore.get_count():
+        default_roles = {}
+        for role in PERMISSION.keys():
+            default_roles[role] = await RoleStore.create_role(name=role)
 
-    await TariffPlanStore.create(TariffPlanSchema(title="Basic",
-                                                  description="to 5 users available Cancel anytime",
-                                                  price=497,
-                                                  doctor_amount=5,
-                                                  duration='1').model_dump())
-    await TariffPlanStore.create(TariffPlanSchema(title="Standart",
-                                                  description="to 10 users available Cancel anytime",
-                                                  price=873,
-                                                  doctor_amount=10,
-                                                  duration='1').model_dump())
-    await TariffPlanStore.create(TariffPlanSchema(title="Enterprise",
-                                                  description="unlimited users to add Cancel anytime",
-                                                  price=5000,
-                                                  duration='1').model_dump())
-    await TariffPlanStore.create(TariffPlanSchema(title="Basic",
-                                                  description="to 5 users available Cancel anytime",
-                                                  price=497,
-                                                  doctor_amount=5,
-                                                  duration='12').model_dump())
-    await TariffPlanStore.create(TariffPlanSchema(title="Standart",
-                                                  description="to 10 users available Cancel anytime",
-                                                  price=873,
-                                                  doctor_amount=10,
-                                                  duration='12').model_dump())
-    await TariffPlanStore.create(TariffPlanSchema(title="Enterprise",
-                                                  description="unlimited users to add Cancel anytime",
-                                                  price=5000,
-                                                  duration='12').model_dump())
+    # Check if any tariff plans exist
+    if not await TariffPlanStore.get_count():
+        await TariffPlanStore.create(TariffPlanSchema(title="Basic",
+                                                      description="to 5 users available Cancel anytime",
+                                                      price=497,
+                                                      doctor_amount=5,
+                                                      duration='1').model_dump())
+        await TariffPlanStore.create(TariffPlanSchema(title="Standart",
+                                                      description="to 10 users available Cancel anytime",
+                                                      price=873,
+                                                      doctor_amount=10,
+                                                      duration='1').model_dump())
+        await TariffPlanStore.create(TariffPlanSchema(title="Enterprise",
+                                                      description="unlimited users to add Cancel anytime",
+                                                      price=5000,
+                                                      duration='1').model_dump())
+        await TariffPlanStore.create(TariffPlanSchema(title="Basic",
+                                                         description="to 5 users available Cancel anytime",
+                                                         price=497,
+                                                         doctor_amount=5,
+                                                         duration='12').model_dump())
+        await TariffPlanStore.create(TariffPlanSchema(title="Standart",
+                                                      description="to 10 users available Cancel anytime",
+                                                      price=873,
+                                                      doctor_amount=10,
+                                                      duration='12').model_dump())
+        await TariffPlanStore.create(TariffPlanSchema(title="Enterprise",
+                                                      description="unlimited users to add Cancel anytime",
+                                                      price=5000,
+                                                      duration='12').model_dump())
 
-    # await NoteHistoryStore.
-    for role in data.keys():
-        await NoteOptionStore.create_note_option(NoteOptionSchema(name=role, type=data[role]).model_dump())
+    # Check if any note options exist
+    if not await NoteOptionStore.get_count():
+        for role in data.keys():
+            await NoteOptionStore.create_note_option(NoteOptionSchema(name=role, type=data[role]).model_dump())
+
 
 
 async def recreate_tables():
@@ -111,4 +117,5 @@ async def recreate_tables():
     await create_defaults()
 
 print("RECREATING TABLES")
-asyncio.run(recreate_tables())
+# asyncio.run(recreate_tables())
+# recreate_tables()

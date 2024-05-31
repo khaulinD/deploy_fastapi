@@ -16,7 +16,7 @@ EXPOSE 8000
 #COPY db-init.sh /usr/src/app/
 #RUN chmod +x /usr/src/app/db-init.sh
 #RUN /usr/src/app/db-init.sh
-RUN #alembic upgrade head
+RUN alembic upgrade head
 
 # Command to start the application
 CMD ["gunicorn", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "main:app", "--bind", "0.0.0.0:8000"]

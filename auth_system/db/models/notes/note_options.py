@@ -4,7 +4,7 @@ from sqlalchemy.exc import IntegrityError
 from auth import utils as auth_utils
 from db.postgres import Base
 from decorators.as_dict import AsDictMixin
-from sqlalchemy import select
+from sqlalchemy import select, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from decorators.db_session import db_session
@@ -40,6 +40,14 @@ class NoteOption(Base, AsDictMixin):
 
 
 class NoteOptionStore:
+
+    @staticmethod
+    @db_session
+    async def get_count(session) -> int:
+        count_query = select(func.count()).select_from(NoteOption)
+        result = await session.execute(count_query)
+        return result.scalar_one()
+
 
     @staticmethod
     @db_session

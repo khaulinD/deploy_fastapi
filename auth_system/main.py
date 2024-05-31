@@ -5,10 +5,12 @@ import stripe
 import uvicorn
 from fastapi import FastAPI, HTTPException, status, Request, Response
 from fastapi.responses import JSONResponse
+
 from auth.middleware import token_middleware
 from company.views import router as company_router
 from auth.jwt_auth_view import router as jwt_auth_router
 from core.config import settings
+from db.create_tables import recreate_tables, create_defaults
 from doctor.company_doctor_view import router as company_doctor_router
 from notes.note_generate.views import router as notes_generate_view
 from tariff_plan.middleware import check_tariff_middleware
@@ -73,10 +75,10 @@ app.include_router(notes_generate_view)
 
 
 
-# @app.on_event("startup")
-# async def startup():
-#     # asyncio.run(recreate_tables())
-#     pass
+@app.on_event("startup")
+async def startup():
+    # await recreate_tables()
+    await create_defaults()
 #
 # @app.on_event("shutdown")
 # async def shutdown():
