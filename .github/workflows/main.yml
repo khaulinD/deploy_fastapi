@@ -33,8 +33,19 @@ jobs:
       - name: Run docker container
         run: |
           docker run -d -i -p 8000:8000 --name fastapi-doctor-container \
+            -e GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }} \
+            -e GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }} \
+            -e JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }} \
+            -e MAIL_HOST=${{ secrets.MAIL_HOST }} \
+            -e MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }} \
+            -e MAIL_PORT=${{ secrets.MAIL_PORT }} \
+            -e MAIL_USER=${{ secrets.MAIL_USER }} \
+            -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
             -e REDIS_HOST=${{ secrets.REDIS_HOST }} \
             -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
+            -e STRIPE_PUBLIC_KEY=${{ secrets.STRIPE_PUBLIC_KEY }} \
+            -e STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }} \
+            -e STRIPE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }} \
             khaulin/fastapi-doctor:latest
       - name: Output logs
         run: docker logs fastapi-doctor-container
