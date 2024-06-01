@@ -43,7 +43,7 @@ jobs:
             -e OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }} \
             -e REDIS_HOST=${{ secrets.REDIS_HOST }} \
             -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
-            -e STRIPE_PUBLIC_KEY=${{ secrets.STRIPE_PUBLIC PUBLIC_KEY }} \
+            -e STRIPE_PUBLIC_KEY=${{ secrets.STRIPE_PUBLIC_KEY }} \
             -e STRIPE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }} \
             -e STRIPE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }} \
             khaulin/fastapi-doctor:latest
