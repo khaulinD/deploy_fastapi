@@ -8,11 +8,12 @@ load_dotenv()
 
 BASE_DIR = Path(__file__).parent.parent
 
-DB_USER = os.environ.get("POSTGRES_USER")
-DB_PASSWORD = os.environ.get("POSTGRES_PASSWORD")
-DB_HOST = os.environ.get("POSTGRES_HOST")
-DB_PORT = os.environ.get("POSTGRES_PORT")
-DB_NAME = os.environ.get("POSTGRES_DB")
+DB_USER = os.getenv("POSTGRES_USER")
+DB_USER = os.getenv("POSTGRES_USER")
+DB_PASSWORD = os.getenv("POSTGRES_PASSWORD")
+DB_HOST = os.getenv("POSTGRES_HOST")
+DB_PORT = os.getenv("POSTGRES_PORT")
+DB_NAME = os.getenv("POSTGRES_DB")
 
 
 class DbSettings(BaseModel):
@@ -28,39 +29,39 @@ class DbSettings(BaseModel):
 
 
 class RedisSettings(BaseModel):
-    host: str = os.environ.get("REDIS_HOST")
-    port: int = os.environ.get("REDIS_PORT")
+    host: str = os.getenv("REDIS_HOST")
+    port: int = os.getenv("REDIS_PORT")
 
 
 class GoogleKeys(BaseModel):
-    client_id: str = os.environ.get("GOOGLE_CLIENT_ID")
-    client_secret: str = os.environ.get("GOOGLE_CLIENT_SECRET")
+    client_id: str = os.getenv("GOOGLE_CLIENT_ID")
+    client_secret: str = os.getenv("GOOGLE_CLIENT_SECRET")
 
 
 class MailSettings(BaseModel):
-    HOST: str = os.environ.get("MAIL_HOST")
-    PORT: int = os.environ.get("MAIL_PORT")
-    USER: str = os.environ.get("MAIL_USER")
-    PASSWORD: str = os.environ.get("MAIL_PASSWORD")
+    HOST: str = os.getenv("MAIL_HOST")
+    PORT: int = os.getenv("MAIL_PORT")
+    USER: str = os.getenv("MAIL_USER")
+    PASSWORD: str = os.getenv("MAIL_PASSWORD")
 
 
 class AuthJWT(BaseModel):
-    private_key_path: str = os.environ.get("JWT_SECRET_KEY")
-    public_key_path: str = os.environ.get("JWT_SECRET_KEY")
+    private_key_path: str = os.getenv("JWT_SECRET_KEY")
+    public_key_path: str = os.getenv("JWT_SECRET_KEY")
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
     refresh_token_expire_minutes: int = 180
 
 
 class StripePayments(BaseModel):
-    public_key: str = os.environ.get("STRIPE_PUBLIC_KEY")
-    private_key: str = os.environ.get("STRIPE_SECRET_KEY")
+    public_key: str = os.getenv("STRIPE_PUBLIC_KEY")
+    private_key: str = os.getenv("STRIPE_SECRET_KEY")
 
 
 class Settings(BaseSettings):
     redis: RedisSettings = RedisSettings()
 
-    openai_api_key: str = os.environ.get("OPENAI_API_KEY")
+    openai_api_key: str = os.getenv("OPENAI_API_KEY")
 
     verification_code: dict = {}
 
@@ -75,8 +76,8 @@ class Settings(BaseSettings):
 
     google_keys: GoogleKeys = GoogleKeys()
 
-    base_url: str = os.environ.get("BASE_URL")
-    frontend_url: str = os.environ.get("FRONT_BASE_URL")
+    base_url: str = "http://127.0.0.1:8000"
+    frontend_url: str = "http://localhost:5173"
 
     # db_echo: bool = True
     excluded_jwt_paths: set[tuple[str, str]] = {
