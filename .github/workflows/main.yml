@@ -33,6 +33,8 @@ jobs:
       - name: Run docker container
         run: |
           docker run -d -i -p 8000:8000 --name fastapi-doctor-container \
+            -e REDIS_HOST=${{ secrets.REDIS_HOST }} \
+            -e REDIS_PORT=${{ secrets.REDIS_PORT }} \
             khaulin/fastapi-doctor:latest
       - name: Output logs
         run: docker logs fastapi-doctor-container
