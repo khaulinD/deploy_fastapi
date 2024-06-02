@@ -23,33 +23,30 @@ jobs:
         run: docker push khaulin/fastapi-doctor:latest
         
   deploy:
-    needs: build
     runs-on: self-hosted
+    environment: production
     steps:
-      - name: Pull image from docker hub
+      - name: Pull image from Docker Hub
         run: docker pull khaulin/fastapi-doctor:latest
+
       - name: Delete old container
         run: docker rm -f fastapi-doctor-container
-      - name: Create env file
-        run: |
-          echo "GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}" >> .env
-          echo "GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}" >> .env
-          echo "JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}" >> .env
-          echo "MAIL_HOST=${{ secrets.MAIL_HOST }}" >> .env
-          echo "MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}" >> .env
-          echo "MAIL_PORT=${{ secrets.MAIL_PORT }}" >> .env
-          echo "MAIL_USER=${{ secrets.MAIL_USER }}" >> .env
-          echo "OPENAI_API_KEY=${{ secrets.OPENAI_API_KEY }}" >> .env
-          echo "REDIS_HOST=${{ secrets.REDIS_HOST }}" >> .env
-          echo "REDIS_PORT=${{ secrets.REDIS_PORT }}" >> .env
-          echo "STRIKE_PUBLIC_KEY=${{ secrets.STRIPE_PUBLIC_KEY }}" >> .env
-          echo "STRIKE_SECRET_KEY=${{ secrets.STRIPE_SECRET_KEY }}" >> .env
-          echo "STRIKE_WEBHOOK_SECRET=${{ secrets.STRIPE_WEBHOOK_SECRET }}" >> .env
+
       - name: Run docker container
-        run: |
-          docker run -d -p 8000:8000 \
-            --name fastapi-doctor-container \
-            --env-file .env \
-            khaulin/fastapi-doctor
+        run: docker run -d -p 8000:8000 --name fastapi-doctor-container khaulin/fastapi-doctor
+        env:
+          GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          JWT_SECRET_KEY: ${{ secrets.JWT_SECRET_KEY }}
+          MAIL_HOST: ${{ secrets.MAIL_HOST }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          MAIL_PORT: ${{ secrets.MAIL_PORT }}
+          MAIL_USER: ${{ secrets.MAIL_USER }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          REDIS_HOST: ${{ secrets.REDIS_HOST }}
+          REDIS_PORT: ${{ secrets.REDIS_PORT }}
+          STRIPE_PUBLIC_KEY: ${{ secrets.STRIPE_PUBLIC_KEY }}
+          STRIPE_SECRET_KEY: $${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_WEBHOOK_SECRET: $${{ secrets.STRIPE_WEBHOOK_SECRET }}
 
 
