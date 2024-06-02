@@ -23,6 +23,7 @@ jobs:
         run: docker push khaulin/fastapi-doctor:latest
         
   deploy:
+    needs: build
     runs-on: self-hosted
     environment: production
     steps:
